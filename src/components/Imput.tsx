@@ -4,6 +4,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import Cookies from 'js-cookie';
 
 interface FormValues {
     username: string;
@@ -16,9 +17,19 @@ const UserForm = () => {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data);
-        axios.post('https://adminchat-back-3ohq.vercel.app/user/add-user', data, { withCredentials: true }).
-            then((res) => {
+        axios.post('https://adminchat-back-3ohq.vercel.app/user/add-user', data, { withCredentials: true })
+            .then((res) => {
                 if (res.status === 201) {
+                    // Manually set the cookie on the client-side
+                    Cookies.set('userData', JSON.stringify({
+                        username: data.username,
+                        role: data.role,
+                        userId: res.data.newUser._id // Assuming `newUser` object is returned with _id
+                    }), {
+                        expires: 1, // Expires in 1 day
+                    });
+    
+                    // Redirect based on role
                     if (data.role === 'user') {
                         router.push('/chat');
                     } else if (data.role === 'admin') {
@@ -28,9 +39,8 @@ const UserForm = () => {
             })
             .catch((err) => {
                 console.log(err);
-            })
+            });
     };
-
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}

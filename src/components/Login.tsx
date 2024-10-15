@@ -20,7 +20,6 @@ export default function Login() {
                 const { username, role, _id } = res.data.data;
                 Cookies.set('userData', JSON.stringify({ username, role, userId: _id }), {
                     expires: 1, // Expires in 1 day
-                    sameSite: 'lax', // Protects against CSRF
                 });
                 if (role === 'user') {
                     router.push('/chat');
