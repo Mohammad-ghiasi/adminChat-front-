@@ -14,8 +14,8 @@ export default async function ChatRoute() {
   let roomData = null;
   if (userData && userData.userId) {
     try {
-      await axios.post('https://adminchat-back.vercel.app/chat/add-chatRoom', {data: userData.userId})
-      const response = await axios.get(`https://adminchat-back.vercel.app/chat/find-chatRoom/${userData.userId}`)
+      await axios.post('https://adminchat-back-3ohq.vercel.app/chat/add-chatRoom', {data: userData.userId})
+      const response = await axios.get(`https://adminchat-back-3ohq.vercel.app/chat/find-chatRoom/${userData.userId}`)
 
       // Assuming your endpoint returns room data under 'data'
       roomData = response?.data.data;
