@@ -15,7 +15,7 @@ export default function Login() {
     const { register, reset, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
 
     const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-        axios.get(`https://adminchat-back-3ohq-6veaoukx0-mohammad-ghiasis-projects.vercel.app/?vercelToolbarCode=6Mv3PnPyOwcwkkz/user/get-user?userId=${data.userId}`)
+        axios.get(`https://adminchat-back-3ohq.vercel.app/user/get-user?userId=${data.userId}`)
             .then((res) => {
                 const { username, role, _id } = res.data.data;
                 Cookies.set('userData', JSON.stringify({ username, role, userId: _id }), {
