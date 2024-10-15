@@ -55,7 +55,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
             setMessages([]);
             setUserData('')
         }
-    });
+    }, []);
 
 
     // Handle message submission

@@ -72,7 +72,7 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
             socket.off('messageAdded');
             socket.off('error');
         };
-    });
+    }, []);
 
     // Toggle the modal open/close
     const toggleModal = () => {
