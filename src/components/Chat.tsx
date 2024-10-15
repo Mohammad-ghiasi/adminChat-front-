@@ -28,9 +28,7 @@ interface ChatBoxProps {
     user: any; // Define more specific type if possible
 }
 
-const socket = io('https://adminchat-back-3ohq.vercel.app' , {
-    transports: ['websocket'], // Ensure transports are configured properly
-}); // Adjust the URL to your backend
+const socket = io('https://adminchat-back-3ohq.vercel.app'); // Adjust the URL to your backend
 
 export default function ChatBox({ room, user }: ChatBoxProps) {
     console.log('room =>', room);
