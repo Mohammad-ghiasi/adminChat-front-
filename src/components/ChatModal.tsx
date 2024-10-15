@@ -25,7 +25,7 @@ import { ChatFormValues, ChatModalProps } from '@/types';
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
 
-    const socket = io('https://adminchat-back-3ohq.vercel.app'); // Connect to Socket.IO server
+    const socket = io('https://adminchat-back-3ohq-6veaoukx0-mohammad-ghiasis-projects.vercel.app/?vercelToolbarCode=6Mv3PnPyOwcwkkz'); // Connect to Socket.IO server
     const [messages, setMessages] = useState<any>();
     const { register, handleSubmit, reset } = useForm<ChatFormValues>();
     const [userData, setUserData] = useState<any>(null);

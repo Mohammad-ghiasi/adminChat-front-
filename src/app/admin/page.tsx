@@ -16,7 +16,7 @@ export default function AdminPage() {
 
 
     useEffect(() => {
-        const socket = io('https://adminchat-back-3ohq.vercel.app');
+        const socket = io('https://adminchat-back-3ohq-6veaoukx0-mohammad-ghiasis-projects.vercel.app/?vercelToolbarCode=6Mv3PnPyOwcwkkz');
         const userDataString = Cookies.get('userData');
         if (userDataString) {
             const parsedData = JSON.parse(userDataString);

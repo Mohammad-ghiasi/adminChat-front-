@@ -16,7 +16,7 @@ const UserForm = () => {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data);
-        axios.post('https://adminchat-back-3ohq.vercel.app/user/add-user', data, { withCredentials: true }).
+        axios.post('https://adminchat-back-3ohq-6veaoukx0-mohammad-ghiasis-projects.vercel.app/?vercelToolbarCode=6Mv3PnPyOwcwkkz/user/add-user', data, { withCredentials: true }).
             then((res) => {
                 if (res.status === 201) {
                     if (data.role === 'user') {
