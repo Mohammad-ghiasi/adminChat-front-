@@ -29,7 +29,6 @@ interface ChatBoxProps {
 }
 
 const socket = io('https://adminchat-back-3ohq.vercel.app' , {
-    withCredentials: true, // Allow sending cookies
     transports: ['websocket', 'polling'], // Ensure transports are configured properly
 }); // Adjust the URL to your backend
 

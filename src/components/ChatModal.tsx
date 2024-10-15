@@ -26,7 +26,6 @@ import { ChatFormValues, ChatModalProps } from '@/types';
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
 
     const socket = io('https://adminchat-back-3ohq.vercel.app' , {
-        withCredentials: true, // Allow sending cookies
         transports: ['websocket', 'polling'], // Ensure transports are configured properly
     }); // Connect to Socket.IO server
     const [messages, setMessages] = useState<any>();
