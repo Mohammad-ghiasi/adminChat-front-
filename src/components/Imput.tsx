@@ -48,7 +48,7 @@ const UserForm = () => {
         >
             <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                    Username
+                    username
                 </label>
                 <input
                     id="username"
