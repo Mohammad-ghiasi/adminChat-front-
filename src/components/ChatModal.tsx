@@ -6,15 +6,14 @@ import {
     ModalHeader,
     ModalCloseButton,
     ModalBody,
-    ModalFooter,
-    Button,
-    Avatar,
-    Text,
     VStack,
     Box,
     InputGroup,
     Input,
     InputRightElement,
+    Button,
+    Avatar,
+    Text,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { IoIosSend } from 'react-icons/io';
@@ -22,14 +21,13 @@ import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
 import { ChatFormValues, ChatModalProps } from '@/types';
 
+const socket = io('https://admin-chat.liara.run', {
+    withCredentials: true,
+    transports: ['websocket'],
+}); // Move socket initialization outside the component to prevent re-initialization
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
-
-    const socket = io('https://admin-chat.liara.run', {
-        withCredentials: true,
-        transports: ['websocket'],
-    }); // Connect to Socket.IO server
-    const [messages, setMessages] = useState<any>();
+    const [messages, setMessages] = useState<any>([]);
     const { register, handleSubmit, reset } = useForm<ChatFormValues>();
     const [userData, setUserData] = useState<any>(null);
     const [thisUserData, setThisUserData] = useState<any>(null);
@@ -39,50 +37,52 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
         if (thisUserString) {
             const parsedData = JSON.parse(thisUserString);
             setThisUserData(parsedData);
-        };
+        }
+
         if (userId) {
-            console.log(userId);
+            console.log('hi'); // This should log if userId is present
 
             socket.emit('findRoomByUserId', userId); // Emit event to find the room
             socket.on('roomFound', (data) => {
+                console.log(data);
                 setUserData(data.data.user);
                 setMessages(data.data.room.messages);
             });
+
             socket.emit('setNewMessageFlags', { userId: userId, UTA: false });
-            socket.on('error', (erroe) => {
-                console.log(erroe);
+
+            socket.on('error', (error) => {
+                console.error(error);
             });
         }
 
         return () => {
-            setMessages([]);
-            setUserData('')
-        }
-    }, []);
-
+            // Clean up listeners to prevent memory leaks
+            socket.off('roomFound');
+            socket.off('error');
+        };
+    }, [userId]); // Include userId in the dependency array
 
     // Handle message submission
     const onSubmit: SubmitHandler<ChatFormValues> = ({ message }) => {
-
         if (message.trim() !== '') {
             // Emit the message event to the backend
-            socket.emit('addMessage', { message, creator: thisUserData.role, forUser: userData._id });
+            socket.emit('addMessage', { message, creator: thisUserData?.role, forUser: userData?._id });
 
             // Listen for the 'messageAdded' event to handle success
-            socket.on('messageAdded', (response) => {
-                setMessages(response.finalNewMessage.messages)
+            socket.once('messageAdded', (response) => {
+                setMessages(response.finalNewMessage.messages);
                 reset();
             });
 
             socket.emit('setNewMessageFlags', { userId: userId, ATU: true });
 
             // Listen for the 'error' event to handle errors
-            socket.on('error', (error) => {
-                console.log(error.message); // Handle error message
+            socket.once('error', (error) => {
+                console.error(error.message);
             });
-        };
+        }
     };
-
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="md">
@@ -127,11 +127,11 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
                                 <InputRightElement>
                                     <Button
                                         type="submit"
-                                        variant="link" // Use variant="link" to disable default styles
+                                        variant="link"
                                         aria-label="Send"
-                                        height="100%" // Ensure the button fits the input height
-                                        p={0} // Remove padding
-                                        minWidth="0" // Remove min-width to avoid stretching
+                                        height="100%"
+                                        p={0}
+                                        minWidth="0"
                                         leftIcon={<IoIosSend size={'26px'} className="text-blue-500" />}
                                     />
                                 </InputRightElement>

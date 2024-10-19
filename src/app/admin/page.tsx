@@ -24,6 +24,8 @@ export default function AdminPage() {
         if (userDataString) {
             const parsedData = JSON.parse(userDataString);
             setUserData(parsedData);
+            
+            
 
             socket.on('connect', () => {    
                 // Emit the getAllRooms event
@@ -32,8 +34,8 @@ export default function AdminPage() {
     
             // Listen for the allRooms event
             socket.on('allRooms', (data) => {
-                console.log('All rooms:', data.data);
-                setRooms(data.data)
+                // console.log('All rooms:', data.data);
+                setRooms(data.data);
             });
     
             // Listen for error events
@@ -57,7 +59,6 @@ export default function AdminPage() {
         setSelectedUserId(null);
     };
 
-    // console.log(users);
 
     return (
         <div className="container mx-auto p-4">
@@ -106,3 +107,5 @@ export default function AdminPage() {
         </div>
     );
 }
+
+// https://admin-chat.liara.run

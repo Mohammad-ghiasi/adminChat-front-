@@ -1,4 +1,3 @@
-// ChatBox.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -34,7 +33,7 @@ const socket = io('https://admin-chat.liara.run', {
 }); // Adjust the URL to your backend
 
 export default function ChatBox({ room, user }: ChatBoxProps) {
-    console.log('room =>', room);
+
 
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
@@ -55,6 +54,9 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
                         )
                 ),
             ]);
+            // console.log(messages); 
+            // console.log('room =>', room);
+            // console.log('user =>', user);
         }
 
         // Listen for incoming messages
@@ -75,7 +77,7 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
             socket.off('messageAdded');
             socket.off('error');
         };
-    }, []);
+    }, [room, user]);
 
     // Toggle the modal open/close
     const toggleModal = () => {
@@ -93,6 +95,9 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
         socket.emit('addMessage', { message, creator: user.role, forUser: user._id });
         socket.emit('setNewMessageFlags', {userId: user._id, UTA: true });
     };
+
+    // console.log(messages);
+
 
     return (
         <>
