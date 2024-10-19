@@ -21,10 +21,10 @@ export default function ChatRoute() {
         try {
           await axios.post('https://admin-chat.liara.run/chat/add-chatRoom', {
             data: parsedUserData.userId,
-          });
+          }, {withCredentials: true});
 
           const response = await axios.get(
-            `https://admin-chat.liara.run/chat/find-chatRoom/${parsedUserData.userId}`
+            `https://admin-chat.liara.run/chat/find-chatRoom/${parsedUserData.userId}`, {withCredentials: true}
           );
 
           // Assuming your endpoint returns room data under 'data'

@@ -28,7 +28,10 @@ interface ChatBoxProps {
     user: any; // Define more specific type if possible
 }
 
-const socket = io('https://admin-chat.liara.run'); // Adjust the URL to your backend
+const socket = io('https://admin-chat.liara.run', {
+    withCredentials: true,
+    transports: ['websocket'],
+}); // Adjust the URL to your backend
 
 export default function ChatBox({ room, user }: ChatBoxProps) {
     console.log('room =>', room);

@@ -15,7 +15,7 @@ export default function Login() {
     const { register, reset, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
 
     const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-        axios.get(`https://admin-chat.liara.run/user/get-user?userId=${data.userId}`)
+        axios.get(`https://admin-chat.liara.run/user/get-user?userId=${data.userId}`, {withCredentials: true})
             .then((res) => {
                 const { username, role, _id } = res.data.data;
                 Cookies.set('userData', JSON.stringify({ username, role, userId: _id }), {

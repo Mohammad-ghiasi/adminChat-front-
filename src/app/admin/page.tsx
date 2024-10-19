@@ -16,7 +16,10 @@ export default function AdminPage() {
 
 
     useEffect(() => {
-        const socket = io('https://admin-chat.liara.run');
+        const socket = io('https://admin-chat.liara.run', {
+            withCredentials: true,
+            transports: ['websocket'],
+        });
         const userDataString = Cookies.get('userData');
         if (userDataString) {
             const parsedData = JSON.parse(userDataString);
