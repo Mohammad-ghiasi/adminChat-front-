@@ -17,7 +17,7 @@ const UserForm = () => {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data);
-        axios.post('https://admin-chat.liara.run//user/add-user', data, { withCredentials: true })
+        axios.post('https://admin-chat.liara.run/user/add-user', data, { withCredentials: true })
             .then((res) => {
                 if (res.status === 201) {
                     // Manually set the cookie on the client-side
