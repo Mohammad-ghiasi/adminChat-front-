@@ -16,7 +16,7 @@ export default function AdminPage() {
 
 
     useEffect(() => {
-        const socket = io('https://adminchat-back-3ohq.vercel.app');
+        const socket = io('https://admin-chat.liara.run');
         const userDataString = Cookies.get('userData');
         if (userDataString) {
             const parsedData = JSON.parse(userDataString);

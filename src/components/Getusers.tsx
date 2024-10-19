@@ -19,7 +19,7 @@ export default function Getusers() {
             console.log(userId);
             
     
-            const response = await axios.get(`http://localhost:3001/chat/find-chatRoom?roomId=670a22aca447c7392d23b52e`);
+            const response = await axios.get(`https://admin-chat.liara.run/chat/find-chatRoom?roomId=670a22aca447c7392d23b52e`);
             console.log(response.data);
     
         } catch (error: any) {

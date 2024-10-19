@@ -19,12 +19,12 @@ export default function ChatRoute() {
     if (parsedUserData && parsedUserData.userId) {
       const fetchRoomData = async () => {
         try {
-          await axios.post('https://adminchat-back-3ohq.vercel.app/chat/add-chatRoom', {
+          await axios.post('https://admin-chat.liara.run/chat/add-chatRoom', {
             data: parsedUserData.userId,
           });
 
           const response = await axios.get(
-            `https://adminchat-back-3ohq.vercel.app/chat/find-chatRoom/${parsedUserData.userId}`
+            `https://admin-chat.liara.run/chat/find-chatRoom/${parsedUserData.userId}`
           );
 
           // Assuming your endpoint returns room data under 'data'
