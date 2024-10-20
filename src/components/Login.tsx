@@ -5,6 +5,7 @@ import { Input, Button, VStack, FormControl, FormErrorMessage } from '@chakra-ui
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import api from '@/services/api';
 
 interface LoginFormValues {
     userId: string;
@@ -15,7 +16,7 @@ export default function Login() {
     const { register, reset, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
 
     const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-        axios.get(`https://admin-chat.liara.run/user/get-user?userId=${data.userId}`, {withCredentials: true})
+        api.get(`/user/get-user?userId=${data.userId}`)
             .then((res) => {
                 const { username, role, _id } = res.data.data;
                 Cookies.set('userData', JSON.stringify({ username, role, userId: _id }), {

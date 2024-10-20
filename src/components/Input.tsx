@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Cookies from 'js-cookie';
+import api from '@/services/api';
 
 interface FormValues {
     username: string;
@@ -17,7 +18,7 @@ const UserForm = () => {
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         console.log(data);
-        axios.post('https://admin-chat.liara.run/user/add-user', data, { withCredentials: true })
+        api.post('/user/add-user', data)
             .then((res) => {
                 if (res.status === 201) {
                     // Manually set the cookie on the client-side

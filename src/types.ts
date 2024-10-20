@@ -8,10 +8,6 @@ export interface ChatFormValues {
     message: string;
 }
 
-export interface Message {
-    text: string;
-    sender: 'user' | 'admin';
-}
 
 export interface ChatModalProps {
     isOpen: boolean;
@@ -24,6 +20,21 @@ export interface ChatFormValues {
 }
 
 export interface Message {
-    text: string;
-    sender: 'user' | 'admin';
+    message: string;
+    creator: 'user' | 'admin';
+}
+
+export interface ChatBoxProps {
+    room: {
+        _id: string
+        isForUser: string;
+        messages: [Message];
+        newMessageAdminToUser: boolean;
+        newMessageUserToAdmin: boolean;
+    };
+    user: {
+        _id: string;
+        username: string;
+        role: 'user' | 'admin'
+    };
 }

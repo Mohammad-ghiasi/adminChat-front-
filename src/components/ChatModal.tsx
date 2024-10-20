@@ -18,13 +18,8 @@ import {
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { IoIosSend } from 'react-icons/io';
 import Cookies from 'js-cookie';
-import { io } from 'socket.io-client';
 import { ChatFormValues, ChatModalProps } from '@/types';
-
-const socket = io('https://admin-chat.liara.run', {
-    withCredentials: true,
-    transports: ['websocket'],
-}); // Move socket initialization outside the component to prevent re-initialization
+import socket from '@/services/soketIo';
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
     const [messages, setMessages] = useState<any>([]);

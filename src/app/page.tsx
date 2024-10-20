@@ -1,4 +1,4 @@
-import UserForm from "@/components/Imput";
+import UserForm from "@/components/Input";
 import Login from "@/components/Login";
 
 

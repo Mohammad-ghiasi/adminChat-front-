@@ -1,108 +1,93 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    VStack,
-    Text,
-    Box,
-    Avatar,
+    Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, VStack, Text, Box, Avatar,
 } from '@chakra-ui/react';
-import { io } from 'socket.io-client';
-import ChatInput from './ChatInput'; // Import the ChatInput component
-import ChatButton from './ChatButton'; // Import the ChatButton component
-
-interface Message {
-    message: string;
-    creator: 'user' | 'admin';
-}
-
-interface ChatBoxProps {
-    room: any; // Define more specific type if possible
-    user: any; // Define more specific type if possible
-}
-
-const socket = io('https://admin-chat.liara.run', {
-    withCredentials: true,
-    transports: ['websocket'],
-}); // Adjust the URL to your backend
+import ChatInput from './ChatInput';
+import ChatButton from './ChatButton';
+import socket from '@/services/soketIo';
+import { ChatBoxProps, Message } from '@/types';
 
 export default function ChatBox({ room, user }: ChatBoxProps) {
-
-
     const [isOpen, setIsOpen] = useState(false);
+    const [haveMessage, setHaveMessage] = useState<boolean>(false);
     const [messages, setMessages] = useState<Message[]>([
         { message: 'Welcome! How can I help you today?', creator: 'admin' },
     ]);
 
-    // Fetch user data from cookie on component mount
-    useEffect(() => {
-        if (user) {
+    // Ref to the end of the messages for auto-scrolling
+    const messageEndRef = useRef<HTMLDivElement>(null);
+
+    // Function to handle new messages
+    const handleNewMessage = (response: any) => {
+        const addedMessage = response?.finalNewMessage?.message;
+        if (addedMessage && addedMessage.trim()) {
             setMessages((prevMessages) => [
                 ...prevMessages,
-                ...room.messages.filter(
-                    (fetchedMsg: Message) =>
+                { message: addedMessage, creator: response.finalNewMessage.creator },
+            ]);
+        }
+    };
+
+    useEffect(() => {
+        if (user && room && room.messages) {
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                ...room.messages
+                    .filter((fetchedMsg: Message) =>
+                        fetchedMsg.message.trim() &&
                         !prevMessages.some(
                             (msg) =>
                                 msg.message === fetchedMsg.message &&
                                 msg.creator === fetchedMsg.creator
                         )
-                ),
+                    ),
             ]);
-            // console.log(messages); 
-            // console.log('room =>', room);
-            // console.log('user =>', user);
+            setHaveMessage(room.newMessageAdminToUser);
         }
 
-        // Listen for incoming messages
-        socket.on('messageAdded', (response) => {
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { message: response.finalNewMessage.message, creator: response.finalNewMessage.creator }
-            ]);
-        });
-
-        // Listen for error messages
         socket.on('error', (error) => {
             console.error(error.message);
         });
 
+        // Clean up socket listeners
         return () => {
-            // Cleanup the listeners when the component unmounts
             socket.off('messageAdded');
             socket.off('error');
         };
     }, [room, user]);
 
-    // Toggle the modal open/close
+    // Toggle modal and reset new message flags
     const toggleModal = () => {
         setIsOpen(!isOpen);
         socket.emit('setNewMessageFlags', { userId: user._id, ATU: false });
+        setHaveMessage(false);
     };
 
-    // Handle message submission
+    // Send message and set new message flags
     const handleSendMessage = (message: string) => {
-        // Add the new message to the state
-        const newMessage: Message = { message, creator: 'user' };
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        if (message.trim()) {
+            const newMessage: Message = { message, creator: 'user' };
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-        // Send the message through the socket
-        socket.emit('addMessage', { message, creator: user.role, forUser: user._id });
-        socket.emit('setNewMessageFlags', {userId: user._id, UTA: true });
+            socket.emit('addMessage', { message, creator: user.role, forUser: user._id });
+            socket.on('messageAdded', handleNewMessage);
+            socket.emit('setNewMessageFlags', { userId: user._id, UTA: true });
+        }
     };
 
-    // console.log(messages);
+    // Scroll to the bottom of the message container
+    const scrollToBottom = () => {
+        messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
 
+    // Use effect to auto-scroll when messages change
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     return (
         <>
-            {/* Use the ChatButton component */}
-            <ChatButton onClick={toggleModal} newMessage={room?.newMessageAdminToUser} />
+            <ChatButton onClick={toggleModal} newMessage={haveMessage} />
 
             <Modal isOpen={isOpen} onClose={toggleModal} size="md">
                 <ModalOverlay />
@@ -139,9 +124,10 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
                                         {msg.message}
                                     </Box>
                                 ))}
+                                {/* This div helps in auto-scrolling */}
+                                <div ref={messageEndRef} />
                             </VStack>
 
-                            {/* Message Input */}
                             <ChatInput onSendMessage={handleSendMessage} />
                         </VStack>
                     </ModalBody>
