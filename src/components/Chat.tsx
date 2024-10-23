@@ -63,6 +63,14 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
         setHaveMessage(false);
     };
 
+    // socket.on('messageAdded', handleNewMessage);
+    socket.on('messageAdded', (response) => {
+        setMessages(response.finalNewMessage.messages);
+        console.log('we have a message');
+        
+    });
+
+
     // Send message and set new message flags
     const handleSendMessage = (message: string) => {
         if (message.trim()) {
@@ -70,7 +78,11 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
             setMessages((prevMessages) => [...prevMessages, newMessage]);
 
             socket.emit('addMessage', { message, creator: user.role, forUser: user._id });
-            socket.on('messageAdded', handleNewMessage);
+            // socket.on('messageAdded', handleNewMessage);
+            socket.on('messageAdded', () => {
+                console.log('Have a new message for user!');
+                
+            });
             socket.emit('setNewMessageFlags', { userId: user._id, UTA: true });
         }
     };

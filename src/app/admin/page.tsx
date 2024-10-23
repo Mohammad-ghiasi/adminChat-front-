@@ -24,7 +24,6 @@ const AdminPage: React.FC = () => {
                 // Emit the getAllRooms event when the socket connects
                 socket.emit('getAllRooms');
             });
-
             // Listen for the 'allRooms' event to receive room data
             socket.on('allRooms', (data) => {
                 setRooms(data.data);
@@ -38,7 +37,7 @@ const AdminPage: React.FC = () => {
 
         // Cleanup the socket connection when the component unmounts
         return () => {
-            socket.disconnect();
+            // socket.disconnect();
         };
     }, []);
 

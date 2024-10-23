@@ -35,11 +35,10 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
         }
 
         if (userId) {
-            console.log('hi'); // This should log if userId is present
 
             socket.emit('findRoomByUserId', userId); // Emit event to find the room
             socket.on('roomFound', (data) => {
-                console.log(data);
+ 
                 setUserData(data.data.user);
                 setMessages(data.data.room.messages);
             });
@@ -58,6 +57,12 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
         };
     }, [userId]); // Include userId in the dependency array
 
+    socket.on('messageAdded', (response) => {
+        setMessages(response.finalNewMessage.messages);
+        console.log('we have a message');
+        
+    });
+
     // Handle message submission
     const onSubmit: SubmitHandler<ChatFormValues> = ({ message }) => {
         if (message.trim() !== '') {
@@ -65,9 +70,11 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, userId }) => {
             socket.emit('addMessage', { message, creator: thisUserData?.role, forUser: userData?._id });
 
             // Listen for the 'messageAdded' event to handle success
-            socket.once('messageAdded', (response) => {
+            socket.on('messageAdded', (response) => {
                 setMessages(response.finalNewMessage.messages);
                 reset();
+                console.log('we have a message');
+                
             });
 
             socket.emit('setNewMessageFlags', { userId: userId, ATU: true });
