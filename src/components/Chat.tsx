@@ -65,8 +65,10 @@ export default function ChatBox({ room, user }: ChatBoxProps) {
 
     // socket.on('messageAdded', handleNewMessage);
     socket.on('messageAdded', (response) => {
-        setMessages(response.finalNewMessage.messages);
-        console.log('we have a message');
+        if (response.finalNewMessage.isForUser === user._id) {
+            setMessages(response.finalNewMessage.messages);
+            console.log('we have a message');
+        }
         
     });
 
